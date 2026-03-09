@@ -3,18 +3,23 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:life_tracker/models/record.dart';
+import 'package:life_tracker/models/todo_item.dart';
 
 /// 核心数据层 - 管理所有记录，持久化到 Hive
 class DataProvider extends ChangeNotifier {
   static const _boxName = 'records';
+  static const _todosBoxName = 'todos';
   static const _budgetKey = '__budget__';
 
   Box<String>? _box;
+  Box<String>? _todosBox;
   final List<Record> _records = [];
+  final List<TodoItem> _todos = [];
   double _monthlyBudget = 3000;
 
   Future<void> init() async {
     _box = await Hive.openBox<String>(_boxName);
+    _todosBox = await Hive.openBox<String>(_todosBoxName);
     // Load budget setting
     final budgetStr = _box?.get(_budgetKey);
     if (budgetStr != null) {
@@ -26,6 +31,16 @@ class DataProvider extends ChangeNotifier {
       try {
         _records.add(
           Record.fromJson(jsonDecode(entry.value) as Map<String, dynamic>),
+        );
+      } catch (_) {
+        // skip corrupted entries
+      }
+    }
+    // Load all todos
+    for (final entry in _todosBox!.toMap().entries) {
+      try {
+        _todos.add(
+          TodoItem.fromJson(jsonDecode(entry.value) as Map<String, dynamic>),
         );
       } catch (_) {
         // skip corrupted entries
@@ -257,6 +272,59 @@ class DataProvider extends ChangeNotifier {
     await _box?.clear();
     // Restore budget after clearing
     await _box?.put(_budgetKey, _monthlyBudget.toString());
+    notifyListeners();
+  }
+
+  // ── TodoItem methods ───────────────────────────────────────────────────
+
+  List<TodoItem> get allTodos => List.unmodifiable(_todos);
+
+  /// 今日任务（非长期，按创建时间升序）
+  List<TodoItem> get todayTodos {
+    final now = DateTime.now();
+    return _todos
+        .where((t) =>
+            !t.isLongTerm &&
+            t.createdAt.year == now.year &&
+            t.createdAt.month == now.month &&
+            t.createdAt.day == now.day)
+        .toList()
+      ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
+  }
+
+  /// 长期目标
+  List<TodoItem> getLongTermTodos() {
+    return _todos.where((t) => t.isLongTerm).toList()
+      ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
+  }
+
+  void addTodo(TodoItem todo) {
+    _todos.add(todo);
+    _todosBox?.put(todo.id, jsonEncode(todo.toJson()));
+    notifyListeners();
+  }
+
+  void toggleTodo(String todoId) {
+    final idx = _todos.indexWhere((t) => t.id == todoId);
+    if (idx == -1) return;
+    final old = _todos[idx];
+    final updated = old.copyWith(isCompleted: !old.isCompleted);
+    _todos[idx] = updated;
+    _todosBox?.put(updated.id, jsonEncode(updated.toJson()));
+    notifyListeners();
+  }
+
+  void updateTodo(TodoItem todo) {
+    final idx = _todos.indexWhere((t) => t.id == todo.id);
+    if (idx == -1) return;
+    _todos[idx] = todo;
+    _todosBox?.put(todo.id, jsonEncode(todo.toJson()));
+    notifyListeners();
+  }
+
+  void deleteTodo(String todoId) {
+    _todos.removeWhere((t) => t.id == todoId);
+    _todosBox?.delete(todoId);
     notifyListeners();
   }
 }

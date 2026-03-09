@@ -1,6 +1,6 @@
 {
-  "version": "1.3.1",
-  "tag": "v1.3.1",
-  "apk_url": "https://files.catbox.moe/ylsiay.apk",
-  "notes": "修复自动更新，支持国内网络"
+  "version": "2.0.0",
+  "tag": "v2.0.0",
+  "apk_url": "https://files.catbox.moe/4rehl5.apk",
+  "notes": "Momo风格UI大改版 + ToDo系统 + 运动快捷选项"
 }
