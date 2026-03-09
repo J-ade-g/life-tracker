@@ -129,7 +129,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           FutureBuilder<PackageInfo>(
             future: _packageInfoFuture,
             builder: (context, snapshot) {
-              final version = snapshot.data?.version ?? kCurrentVersion;
+              final version = snapshot.data?.version ?? '未知';
               return ListTile(
                 leading: const Icon(Icons.info_outline),
                 title: const Text('当前版本'),

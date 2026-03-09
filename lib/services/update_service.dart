@@ -4,9 +4,8 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:open_file/open_file.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
-
-const String kCurrentVersion = '1.0.0';
 
 const String _kGithubApiUrl =
     'https://api.github.com/repos/J-ade-g/life-tracker/releases/latest';
@@ -27,6 +26,9 @@ class UpdateService {
   /// Returns [UpdateInfo] if a newer version is available, otherwise null.
   static Future<UpdateInfo?> checkForUpdate() async {
     try {
+      final packageInfo = await PackageInfo.fromPlatform();
+      final currentVersion = packageInfo.version;
+
       final response = await http
           .get(Uri.parse(_kGithubApiUrl))
           .timeout(const Duration(seconds: 10));
@@ -37,7 +39,7 @@ class UpdateService {
       final tagName = data['tag_name'] as String;
       final version = tagName.startsWith('v') ? tagName.substring(1) : tagName;
 
-      if (!_isNewer(version, kCurrentVersion)) return null;
+      if (!_isNewer(version, currentVersion)) return null;
 
       final assets = (data['assets'] as List).cast<Map<String, dynamic>>();
       String? apkUrl;
