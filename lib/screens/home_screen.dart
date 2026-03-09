@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:life_tracker/dialogs/courage_dialog.dart';
+import 'package:life_tracker/dialogs/exercise_dialog.dart';
 import 'package:life_tracker/dialogs/expense_dialog.dart';
 import 'package:life_tracker/dialogs/review_dialog.dart';
 import 'package:life_tracker/models/record.dart';
@@ -136,10 +138,9 @@ class _QuickActions extends StatelessWidget {
                 _ActionButton(
                   emoji: '🏃',
                   label: '运动',
-                  onTap: () => _addRecord(
+                  onTap: () => ExerciseDialog.show(
                     context,
-                    RecordType.exercise,
-                    {},
+                    context.read<DataProvider>().addRecord,
                   ),
                 ),
               ],
@@ -151,29 +152,29 @@ class _QuickActions extends StatelessWidget {
               children: [
                 _ActionButton(
                   emoji: '🔴',
-                  label: '拒绝 ${counts[CourageType.rejection] ?? 0}',
-                  onTap: () => _addRecord(
+                  label: '拒绝 ${counts[CourageType.rejection] ?? 0}/100',
+                  onTap: () => CourageDialog.show(
                     context,
-                    RecordType.courage,
-                    {'courageType': CourageType.rejection},
+                    CourageType.rejection,
+                    context.read<DataProvider>().addRecord,
                   ),
                 ),
                 _ActionButton(
                   emoji: '🟡',
-                  label: '新事物 ${counts[CourageType.newThing] ?? 0}',
-                  onTap: () => _addRecord(
+                  label: '新事物 ${counts[CourageType.newThing] ?? 0}/100',
+                  onTap: () => CourageDialog.show(
                     context,
-                    RecordType.courage,
-                    {'courageType': CourageType.newThing},
+                    CourageType.newThing,
+                    context.read<DataProvider>().addRecord,
                   ),
                 ),
                 _ActionButton(
                   emoji: '🟠',
-                  label: '负反馈 ${counts[CourageType.negativeFeedback] ?? 0}',
-                  onTap: () => _addRecord(
+                  label: '负反馈 ${counts[CourageType.negativeFeedback] ?? 0}/100',
+                  onTap: () => CourageDialog.show(
                     context,
-                    RecordType.courage,
-                    {'courageType': CourageType.negativeFeedback},
+                    CourageType.negativeFeedback,
+                    context.read<DataProvider>().addRecord,
                   ),
                 ),
               ],
@@ -338,10 +339,20 @@ class _Timeline extends StatelessWidget {
       case RecordType.mindfulness:
         return '🧘 正念';
       case RecordType.exercise:
+        final exerciseType = r.data['exerciseType'] as String?;
+        final duration = r.data['duration'] as int?;
+        if (exerciseType != null && duration != null) {
+          return '🏃 $exerciseType (${duration}min)';
+        } else if (exerciseType != null) {
+          return '🏃 $exerciseType';
+        }
         return '🏃 运动';
       case RecordType.courage:
         final ct = r.data['courageType'] as CourageType?;
-        return ct != null ? '${ct.emoji} ${ct.label}' : '💪 勇气';
+        final desc = r.data['description'] as String?;
+        if (ct != null && desc != null) return '${ct.emoji} $desc';
+        if (ct != null) return '${ct.emoji} ${ct.label}';
+        return '💪 勇气';
       case RecordType.expense:
         final cat = r.data['expenseCategory'] as ExpenseCategory?;
         final amount = r.data['amount'] as num?;
