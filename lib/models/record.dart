@@ -181,6 +181,14 @@ class Record {
           if (raw['endTime'] != null)
             'endTime': DateTime.parse(raw['endTime'] as String),
         };
+      case RecordType.todo:
+        return {
+          ...raw,
+          if (raw['targetTime'] != null)
+            'targetTime': DateTime.parse(raw['targetTime'] as String),
+          if (raw['category'] != null)
+            'category': GoalCategory.values.byName(raw['category'] as String),
+        };
       default:
         return raw;
     }

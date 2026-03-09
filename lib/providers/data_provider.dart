@@ -68,6 +68,10 @@ class DataProvider extends ChangeNotifier {
   int get todayMindfulnessCount =>
       todayRecords.where((r) => r.type == RecordType.mindfulness).length;
 
+  /// 今日运动次数
+  int get todayExerciseCount =>
+      todayRecords.where((r) => r.type == RecordType.exercise).length;
+
   // ── Courage ────────────────────────────────────────────────────────────
 
   /// 勇气计数（总计）
@@ -211,6 +215,14 @@ class DataProvider extends ChangeNotifier {
 
   void addRecord(Record record) {
     _records.add(record);
+    _box?.put(record.id, jsonEncode(record.toJson()));
+    notifyListeners();
+  }
+
+  void updateRecord(Record record) {
+    final idx = _records.indexWhere((r) => r.id == record.id);
+    if (idx == -1) return;
+    _records[idx] = record;
     _box?.put(record.id, jsonEncode(record.toJson()));
     notifyListeners();
   }
