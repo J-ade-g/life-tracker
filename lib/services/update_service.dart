@@ -115,33 +115,63 @@ class UpdateService {
   }
 
   /// Downloads the APK and launches the system installer.
-  /// Also tries mirror URLs for download if direct fails.
+  /// Tries multiple mirror URLs if direct GitHub download fails (China access).
   static Future<void> downloadAndInstall(
     String url,
     void Function(double progress) onProgress,
   ) async {
+    // Build fallback download URLs
+    final urls = <String>[url];
+    if (url.contains('github.com') && url.contains('/releases/download/')) {
+      // Add China-friendly mirrors
+      urls.add('https://ghp.ci/$url');
+      urls.add('https://mirror.ghproxy.com/$url');
+      urls.add(url.replaceFirst('github.com', 'download.fastgit.org'));
+    }
+
     final dir = await getTemporaryDirectory();
     final file = File('${dir.path}/app_update.apk');
 
-    final client = http.Client();
-    try {
-      final request = http.Request('GET', Uri.parse(url));
-      final streamedResponse = await client.send(request);
-      final total = streamedResponse.contentLength ?? 0;
-      int received = 0;
+    Exception? lastError;
+    for (final downloadUrl in urls) {
+      try {
+        final client = http.Client();
+        try {
+          final request = http.Request('GET', Uri.parse(downloadUrl));
+          final streamedResponse = await client.send(request).timeout(const Duration(seconds: 15));
 
-      final sink = file.openWrite();
-      await for (final chunk in streamedResponse.stream) {
-        sink.add(chunk);
-        received += chunk.length;
-        if (total > 0) onProgress(received / total);
+          if (streamedResponse.statusCode != 200) {
+            throw Exception('HTTP ${streamedResponse.statusCode}');
+          }
+
+          final total = streamedResponse.contentLength ?? 0;
+          int received = 0;
+
+          final sink = file.openWrite();
+          await for (final chunk in streamedResponse.stream) {
+            sink.add(chunk);
+            received += chunk.length;
+            if (total > 0) onProgress(received / total);
+          }
+          await sink.close();
+
+          // Verify file is not empty
+          if (await file.length() < 1000000) {
+            throw Exception('Downloaded file too small: ${await file.length()} bytes');
+          }
+
+          await OpenFile.open(file.path);
+          return; // Success!
+        } finally {
+          client.close();
+        }
+      } catch (e) {
+        lastError = e is Exception ? e : Exception(e.toString());
+        debugPrint('Download failed from $downloadUrl: $e');
+        continue; // Try next mirror
       }
-      await sink.close();
-    } finally {
-      client.close();
     }
-
-    await OpenFile.open(file.path);
+    throw lastError ?? Exception('All download mirrors failed');
   }
 
   /// Returns true if [latest] is a higher semver than [current].
