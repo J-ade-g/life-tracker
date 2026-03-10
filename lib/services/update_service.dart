@@ -9,12 +9,11 @@ import 'package:path_provider/path_provider.dart';
 
 /// Multiple URLs to try for update check (fallback chain for China access)
 const List<String> _kUpdateUrls = [
-  // Raw GitHub (sometimes works in China)
+  // jsDelivr CDN - best for China access
+  'https://cdn.jsdelivr.net/gh/J-ade-g/life-tracker@main/update.json',
+  // Raw GitHub
   'https://raw.githubusercontent.com/J-ade-g/life-tracker/main/update.json',
-  // GitHub CDN mirrors that may work in China
-  'https://raw.gitmirror.com/J-ade-g/life-tracker/main/update.json',
-  'https://ghp.ci/https://raw.githubusercontent.com/J-ade-g/life-tracker/main/update.json',
-  // Original GitHub API as last resort
+  // GitHub API as last resort
   'https://api.github.com/repos/J-ade-g/life-tracker/releases/latest',
 ];
 
