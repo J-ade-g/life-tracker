@@ -1,6 +1,6 @@
 {
-  "version": "2.0.0",
-  "tag": "v2.0.0",
-  "apk_url": "https://ghp.ci/https://github.com/J-ade-g/life-tracker/releases/download/v2.0.0/app-release.apk",
-  "notes": "Momo风格UI大改版 + ToDo系统 + 运动快捷选项"
+  "version": "2.1.0",
+  "tag": "v2.1.0",
+  "apk_url": "https://ghp.ci/https://github.com/J-ade-g/life-tracker/releases/download/v2.1.0/app-release.apk",
+  "notes": "运动选项可自定义 + 去掉误导箭头 + 统计页增加事项分类"
 }

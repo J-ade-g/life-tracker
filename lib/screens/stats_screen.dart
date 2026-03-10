@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/record.dart';
+import '../models/todo_item.dart';
 import '../providers/data_provider.dart';
 
 // ── Category colors ────────────────────────────────────────────────────────────
@@ -34,6 +35,10 @@ class StatsScreen extends StatelessWidget {
           builder: (context, dp, _) => ListView(
             padding: const EdgeInsets.all(16),
             children: [
+              _sectionTitle(context, '事项分类'),
+              const SizedBox(height: 8),
+              _TodoCategoryCard(dp: dp),
+              const SizedBox(height: 20),
               _sectionTitle(context, '月度预算'),
               const SizedBox(height: 8),
               _BudgetCard(dp: dp),
@@ -634,6 +639,99 @@ class _RatioCards extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Section 7 – Todo Category Counts ──────────────────────────────────────────
+
+class _TodoCategoryCard extends StatelessWidget {
+  final DataProvider dp;
+  const _TodoCategoryCard({required this.dp});
+
+  @override
+  Widget build(BuildContext context) {
+    // Count todos by category (today + long-term)
+    final allTodos = dp.allTodos;
+    final now = DateTime.now();
+    final todayTodos = allTodos.where((t) =>
+        !t.isLongTerm &&
+        t.createdAt.year == now.year &&
+        t.createdAt.month == now.month &&
+        t.createdAt.day == now.day).toList();
+
+    if (todayTodos.isEmpty) {
+      return Card(
+        child: SizedBox(
+          height: 80,
+          child: Center(
+            child: Text(
+              '今日暂无计划事项',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white38),
+            ),
+          ),
+        ),
+      );
+    }
+
+    // Group by category
+    final catCounts = <GoalCategory, int>{};
+    final catCompleted = <GoalCategory, int>{};
+    for (final todo in todayTodos) {
+      catCounts[todo.category] = (catCounts[todo.category] ?? 0) + 1;
+      if (todo.isCompleted) {
+        catCompleted[todo.category] = (catCompleted[todo.category] ?? 0) + 1;
+      }
+    }
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: catCounts.entries.map((e) {
+            final completed = catCompleted[e.key] ?? 0;
+            final total = e.value;
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Row(
+                children: [
+                  Text(e.key.emoji, style: const TextStyle(fontSize: 20)),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      e.key.label,
+                      style: const TextStyle(color: Colors.white, fontSize: 14),
+                    ),
+                  ),
+                  Text(
+                    '$completed/$total',
+                    style: TextStyle(
+                      color: completed == total ? const Color(0xFF2CD87A) : Colors.white54,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  SizedBox(
+                    width: 60,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: LinearProgressIndicator(
+                        value: total > 0 ? completed / total : 0,
+                        minHeight: 6,
+                        backgroundColor: Colors.white12,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          completed == total ? const Color(0xFF2CD87A) : const Color(0xFF5B9BD5),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }).toList(),
         ),
       ),
     );

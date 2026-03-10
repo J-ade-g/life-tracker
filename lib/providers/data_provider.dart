@@ -10,12 +10,16 @@ class DataProvider extends ChangeNotifier {
   static const _boxName = 'records';
   static const _todosBoxName = 'todos';
   static const _budgetKey = '__budget__';
+  static const _presetsKey = '__exercise_presets__';
 
   Box<String>? _box;
   Box<String>? _todosBox;
   final List<Record> _records = [];
   final List<TodoItem> _todos = [];
   double _monthlyBudget = 3000;
+
+  static const _defaultPresets = ['跑步', '散步', '瑜伽', '俯卧撑', '深蹲', '拉伸', '游泳', '骑车', '跳绳'];
+  List<String> _exercisePresets = List.of(_defaultPresets);
 
   Future<void> init() async {
     _box = await Hive.openBox<String>(_boxName);

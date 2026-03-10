@@ -303,8 +303,7 @@ class _HabitCard extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                const SizedBox(width: 8),
-                const Icon(Icons.chevron_right, color: Colors.white24, size: 20),
+
               ],
             ),
           ),
