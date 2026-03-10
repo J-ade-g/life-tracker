@@ -524,11 +524,22 @@ class _AddTodoSheet extends StatefulWidget {
 
 class _AddTodoSheetState extends State<_AddTodoSheet> {
   final _titleController = TextEditingController();
+  final _timeController = TextEditingController();
   GoalCategory _selectedCategory = GoalCategory.other;
-  TimeOfDay? _selectedTime;
 
   @override
-  void dispose() { _titleController.dispose(); super.dispose(); }
+  void dispose() { _titleController.dispose(); _timeController.dispose(); super.dispose(); }
+
+  InputDecoration _inputDeco(String hint) => InputDecoration(
+    hintText: hint,
+    hintStyle: const TextStyle(color: AppTheme.textSecondary),
+    filled: true,
+    fillColor: AppTheme.background,
+    border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: const BorderSide(color: AppTheme.cardBorder)),
+    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: const BorderSide(color: AppTheme.cardBorder, width: 2)),
+    focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: const BorderSide(color: AppTheme.emeraldGreen, width: 2)),
+    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -549,42 +560,14 @@ class _AddTodoSheetState extends State<_AddTodoSheet> {
               controller: _titleController,
               style: const TextStyle(color: AppTheme.textPrimary),
               autofocus: true,
-              decoration: InputDecoration(
-                hintText: widget.isLongTerm ? '目标名称' : '任务名称',
-                hintStyle: const TextStyle(color: AppTheme.textSecondary),
-                filled: true,
-                fillColor: AppTheme.background,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide(color: AppTheme.cardBorder)),
-                enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide(color: AppTheme.cardBorder, width: 2)),
-                focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide(color: AppTheme.emeraldGreen, width: 2)),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-              ),
+              decoration: _inputDeco(widget.isLongTerm ? '目标名称' : '任务名称'),
             ),
             const SizedBox(height: 16),
             if (!widget.isLongTerm) ...[
-              GestureDetector(
-                onTap: () async {
-                  final picked = await showTimePicker(context: context, initialTime: TimeOfDay.now());
-                  if (picked != null) setState(() => _selectedTime = picked);
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                  decoration: BoxDecoration(
-                    color: AppTheme.background,
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: AppTheme.cardBorder, width: 2),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(Icons.access_time, color: AppTheme.textSecondary, size: 18),
-                      const SizedBox(width: 8),
-                      Text(
-                        _selectedTime != null ? _selectedTime!.format(context) : '目标时间（可选）',
-                        style: TextStyle(color: _selectedTime != null ? AppTheme.textPrimary : AppTheme.textSecondary, fontSize: 14),
-                      ),
-                    ],
-                  ),
-                ),
+              TextField(
+                controller: _timeController,
+                style: const TextStyle(color: AppTheme.textPrimary),
+                decoration: _inputDeco('目标时间（可选，格式 HH:MM）'),
               ),
               const SizedBox(height: 16),
             ],
@@ -647,9 +630,15 @@ class _AddTodoSheetState extends State<_AddTodoSheet> {
       return;
     }
     DateTime? targetTime;
-    if (_selectedTime != null) {
-      final now = DateTime.now();
-      targetTime = DateTime(now.year, now.month, now.day, _selectedTime!.hour, _selectedTime!.minute);
+    final timeText = _timeController.text.trim();
+    if (timeText.isNotEmpty) {
+      try {
+        final parts = timeText.split(':');
+        if (parts.length == 2) {
+          final now = DateTime.now();
+          targetTime = DateTime(now.year, now.month, now.day, int.parse(parts[0]), int.parse(parts[1]));
+        }
+      } catch (_) {}
     }
     widget.onSubmit(TodoItem(id: DateTime.now().millisecondsSinceEpoch.toString(), title: title, targetTime: targetTime, category: _selectedCategory, createdAt: DateTime.now(), isLongTerm: widget.isLongTerm));
     Navigator.of(context).pop();
