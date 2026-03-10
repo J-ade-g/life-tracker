@@ -228,29 +228,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             onTap: _clearAllData,
           ),
 
-          const SizedBox(height: 20),
 
-          // ── Goal categories ────────────────────────────────────────────
-          const _SectionHeader(title: '目标分类'),
-          Card(
-            child: Column(
-              children: GoalCategory.values
-                  .map(
-                    (cat) => ListTile(
-                      leading: Text(
-                        cat.emoji,
-                        style: const TextStyle(fontSize: 20),
-                      ),
-                      title: Text(cat.label),
-                      subtitle: const Text(
-                        '自定义功能即将上线',
-                        style: TextStyle(fontSize: 11),
-                      ),
-                    ),
-                  )
-                  .toList(),
-            ),
-          ),
         ],
       ),
     );
