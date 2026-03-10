@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:life_tracker/theme/app_theme.dart';
 import 'package:life_tracker/models/record.dart';
 
 class ReviewDialog extends StatefulWidget {
@@ -59,7 +60,7 @@ class _ReviewDialogState extends State<ReviewDialog> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.white24,
+                  color: AppTheme.cardBorder,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -149,7 +150,7 @@ class _ReviewDialogState extends State<ReviewDialog> {
                         ? Icons.keyboard_arrow_up
                         : Icons.keyboard_arrow_down,
                     size: 20,
-                    color: Colors.white54,
+                    color: AppTheme.textSecondary,
                   ),
                   const SizedBox(width: 4),
                   Text(
@@ -157,7 +158,7 @@ class _ReviewDialogState extends State<ReviewDialog> {
                     style: Theme.of(context)
                         .textTheme
                         .labelMedium
-                        ?.copyWith(color: Colors.white54),
+                        ?.copyWith(color: AppTheme.textSecondary),
                   ),
                 ],
               ),

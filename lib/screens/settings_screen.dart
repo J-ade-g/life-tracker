@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:life_tracker/theme/app_theme.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -135,7 +136,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 title: const Text('当前版本'),
                 trailing: Text(
                   'v$version',
-                  style: const TextStyle(color: Colors.white38),
+                  style: const TextStyle(color: AppTheme.textSecondary),
                 ),
               );
             },
@@ -165,7 +166,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 children: [
                   const Text(
                     '设置本月支出上限',
-                    style: TextStyle(fontSize: 13, color: Colors.white54),
+                    style: TextStyle(fontSize: 13, color: AppTheme.textSecondary),
                   ),
                   const SizedBox(height: 12),
                   Row(
@@ -269,7 +270,7 @@ class _SectionHeader extends StatelessWidget {
       child: Text(
         title,
         style: Theme.of(context).textTheme.labelLarge?.copyWith(
-              color: Colors.white38,
+              color: AppTheme.textSecondary,
               letterSpacing: 1.2,
             ),
       ),

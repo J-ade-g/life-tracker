@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../models/record.dart';
 import '../models/todo_item.dart';
 import '../providers/data_provider.dart';
+import '../theme/app_theme.dart';
 
 // ── Category colors ────────────────────────────────────────────────────────────
 
@@ -74,7 +75,7 @@ class StatsScreen extends StatelessWidget {
         title,
         style: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
-              color: Colors.white70,
+              color: AppTheme.textSecondary,
             ),
       );
 }
@@ -108,7 +109,7 @@ class _BudgetCard extends StatelessWidget {
                   style: Theme.of(context)
                       .textTheme
                       .bodyMedium
-                      ?.copyWith(color: Colors.white54),
+                      ?.copyWith(color: AppTheme.textSecondary),
                 ),
               ],
             ),
@@ -119,7 +120,7 @@ class _BudgetCard extends StatelessWidget {
                 value: ratio,
                 minHeight: 12,
                 color: isOver ? Colors.redAccent : const Color(0xFF6C63FF),
-                backgroundColor: Colors.white12,
+                backgroundColor: AppTheme.cardBorder,
               ),
             ),
             const SizedBox(height: 8),
@@ -129,7 +130,7 @@ class _BudgetCard extends StatelessWidget {
                   : '剩余 ¥${(budget - spent).toStringAsFixed(0)}',
               style: TextStyle(
                 fontSize: 12,
-                color: isOver ? Colors.redAccent : Colors.white54,
+                color: isOver ? Colors.redAccent : AppTheme.textSecondary,
               ),
             ),
           ],
@@ -166,7 +167,7 @@ class _ExpensePieCardState extends State<_ExpensePieCard> {
               style: Theme.of(context)
                   .textTheme
                   .bodyMedium
-                  ?.copyWith(color: Colors.white38),
+                  ?.copyWith(color: AppTheme.textSecondary),
             ),
           ),
         ),
@@ -185,7 +186,7 @@ class _ExpensePieCardState extends State<_ExpensePieCard> {
         titleStyle: const TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.bold,
-          color: Colors.white,
+          color: AppTheme.textPrimary,
         ),
       );
     });
@@ -239,7 +240,7 @@ class _ExpensePieCardState extends State<_ExpensePieCard> {
                             '${e.key.label} ¥${e.value.toStringAsFixed(0)}',
                             style: const TextStyle(
                               fontSize: 11,
-                              color: Colors.white70,
+                              color: AppTheme.textSecondary,
                             ),
                           ),
                         ],
@@ -290,7 +291,7 @@ class _SpendingLineCard extends StatelessWidget {
                 drawVerticalLine: false,
                 horizontalInterval: chartMaxY / 4,
                 getDrawingHorizontalLine: (_) => const FlLine(
-                  color: Colors.white10,
+                  color: AppTheme.cardBorder,
                   strokeWidth: 1,
                 ),
               ),
@@ -308,7 +309,7 @@ class _SpendingLineCard extends StatelessWidget {
                         dayLabels[idx],
                         style: const TextStyle(
                           fontSize: 10,
-                          color: Colors.white38,
+                          color: AppTheme.textSecondary,
                         ),
                       );
                     },
@@ -324,7 +325,7 @@ class _SpendingLineCard extends StatelessWidget {
                         '¥${value.toInt()}',
                         style: const TextStyle(
                           fontSize: 9,
-                          color: Colors.white38,
+                          color: AppTheme.textSecondary,
                         ),
                       );
                     },
@@ -413,7 +414,7 @@ class _CourageCard extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   ct.label,
-                  style: const TextStyle(fontSize: 11, color: Colors.white54),
+                  style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary),
                 ),
               ],
             );
@@ -497,7 +498,7 @@ class _WeeklyHabitsCard extends StatelessWidget {
                     drawVerticalLine: false,
                     horizontalInterval: 1,
                     getDrawingHorizontalLine: (_) => const FlLine(
-                      color: Colors.white10,
+                      color: AppTheme.cardBorder,
                       strokeWidth: 1,
                     ),
                   ),
@@ -515,7 +516,7 @@ class _WeeklyHabitsCard extends StatelessWidget {
                             dayLabels[idx],
                             style: const TextStyle(
                               fontSize: 10,
-                              color: Colors.white38,
+                              color: AppTheme.textSecondary,
                             ),
                           );
                         },
@@ -534,7 +535,7 @@ class _WeeklyHabitsCard extends StatelessWidget {
                             value.toInt().toString(),
                             style: const TextStyle(
                               fontSize: 9,
-                              color: Colors.white38,
+                              color: AppTheme.textSecondary,
                             ),
                           );
                         },
@@ -577,7 +578,7 @@ class _WeeklyHabitsCard extends StatelessWidget {
           const SizedBox(width: 5),
           Text(
             label,
-            style: const TextStyle(fontSize: 11, color: Colors.white54),
+            style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary),
           ),
         ],
       );
@@ -635,7 +636,7 @@ class _RatioCards extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               title,
-              style: const TextStyle(fontSize: 12, color: Colors.white54),
+              style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
               textAlign: TextAlign.center,
             ),
           ],
@@ -669,7 +670,7 @@ class _TodoCategoryCard extends StatelessWidget {
           child: Center(
             child: Text(
               '今日暂无计划事项',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white38),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppTheme.textSecondary),
             ),
           ),
         ),
@@ -702,13 +703,13 @@ class _TodoCategoryCard extends StatelessWidget {
                   Expanded(
                     child: Text(
                       e.key.label,
-                      style: const TextStyle(color: Colors.white, fontSize: 14),
+                      style: const TextStyle(color: AppTheme.textPrimary, fontSize: 14),
                     ),
                   ),
                   Text(
                     '$completed/$total',
                     style: TextStyle(
-                      color: completed == total ? const Color(0xFF2CD87A) : Colors.white54,
+                      color: completed == total ? const Color(0xFF2CD87A) : AppTheme.textSecondary,
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
                     ),
@@ -721,7 +722,7 @@ class _TodoCategoryCard extends StatelessWidget {
                       child: LinearProgressIndicator(
                         value: total > 0 ? completed / total : 0,
                         minHeight: 6,
-                        backgroundColor: Colors.white12,
+                        backgroundColor: AppTheme.cardBorder,
                         valueColor: AlwaysStoppedAnimation<Color>(
                           completed == total ? const Color(0xFF2CD87A) : const Color(0xFF5B9BD5),
                         ),

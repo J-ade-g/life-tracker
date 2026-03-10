@@ -28,7 +28,7 @@ class HomeScreen extends StatelessWidget {
                     _formatDate(DateTime.now()),
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: AppTheme.textPrimary,
                         ),
                   ),
                   const SizedBox(height: 4),
@@ -37,7 +37,6 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
           ),
-          // Habit cards section
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
@@ -50,21 +49,18 @@ class HomeScreen extends StatelessWidget {
               child: _HabitCards(),
             ),
           ),
-          // Today's todos section
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
               child: _TodoSection(),
             ),
           ),
-          // Long-term goals section
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
               child: _LongTermSection(),
             ),
           ),
-          // Timeline section
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
@@ -91,7 +87,6 @@ class HomeScreen extends StatelessWidget {
 
 class _SectionHeader extends StatelessWidget {
   final String title;
-
   const _SectionHeader({required this.title});
 
   @override
@@ -100,7 +95,7 @@ class _SectionHeader extends StatelessWidget {
       title,
       style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
-            color: Colors.white70,
+            color: AppTheme.textSecondary,
           ),
     );
   }
@@ -113,27 +108,27 @@ class _WorkWeekProgress extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text('做四休三', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white38)),
+        Text('做四休三', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppTheme.textSecondary)),
         const SizedBox(width: 12),
         Expanded(
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(6),
             child: LinearProgressIndicator(
               value: 0,
-              minHeight: 4,
-              backgroundColor: Colors.white12,
+              minHeight: 8,
+              backgroundColor: AppTheme.cardBorder,
               valueColor: const AlwaysStoppedAnimation<Color>(AppTheme.emeraldGreen),
             ),
           ),
         ),
         const SizedBox(width: 8),
-        Text('0/4', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white38)),
+        Text('0/4', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppTheme.textSecondary)),
       ],
     );
   }
 }
 
-// ─── Momo-style Habit Cards ───────────────────────────────────────────────────
+// ─── Duolingo-style Habit Cards ──────────────────────────────────────────────
 
 class _HabitCards extends StatelessWidget {
   const _HabitCards();
@@ -148,110 +143,49 @@ class _HabitCards extends StatelessWidget {
 
     return Column(
       children: [
-        _HabitCard(
-          icon: Icons.water_drop,
-          iconBgColor: const Color(0xFF1976D2),
-          label: '喝水',
-          countLabel: '×$waterCount',
-          onTap: () => _addRecord(context, RecordType.water, {}),
-        ),
-        _HabitCard(
-          icon: Icons.self_improvement,
-          iconBgColor: const Color(0xFF00796B),
-          label: '正念',
-          countLabel: '×$mindfulnessCount',
-          onTap: () => _addRecord(context, RecordType.mindfulness, {}),
-        ),
-        _HabitCard(
-          icon: Icons.directions_run,
-          iconBgColor: const Color(0xFFE65100),
-          label: '运动',
-          countLabel: '×$exerciseCount',
-          onTap: () => ExerciseDialog.show(
-            context,
-            context.read<DataProvider>().addRecord,
-          ),
-        ),
-        _HabitCard(
-          icon: Icons.block,
-          iconBgColor: const Color(0xFFC62828),
-          label: '拒绝挑战',
-          countLabel: '${counts[CourageType.rejection] ?? 0}/100',
-          onTap: () => CourageDialog.show(
-            context,
-            CourageType.rejection,
-            context.read<DataProvider>().addRecord,
-          ),
-        ),
-        _HabitCard(
-          icon: Icons.explore,
-          iconBgColor: const Color(0xFFF9A825),
-          label: '新事物',
-          countLabel: '${counts[CourageType.newThing] ?? 0}/100',
-          onTap: () => CourageDialog.show(
-            context,
-            CourageType.newThing,
-            context.read<DataProvider>().addRecord,
-          ),
-        ),
-        _HabitCard(
-          icon: Icons.feedback_outlined,
-          iconBgColor: const Color(0xFFBF360C),
-          label: '负反馈',
-          countLabel: '${counts[CourageType.negativeFeedback] ?? 0}/100',
-          onTap: () => CourageDialog.show(
-            context,
-            CourageType.negativeFeedback,
-            context.read<DataProvider>().addRecord,
-          ),
-        ),
-        _HabitCard(
-          icon: Icons.account_balance_wallet,
-          iconBgColor: const Color(0xFFF57F17),
-          label: '记账',
-          onTap: () => ExpenseDialog.show(
-            context,
-            context.read<DataProvider>().addRecord,
-          ),
-        ),
-        _HabitCard(
-          icon: Icons.replay,
-          iconBgColor: const Color(0xFF4527A0),
-          label: '即时复盘',
-          onTap: () => ReviewDialog.show(
-            context,
-            context.read<DataProvider>().addRecord,
-          ),
-        ),
+        _HabitCard(emoji: '💧', bgColor: const Color(0xFFE8F4FD), accentColor: AppTheme.plannedColor, label: '喝水', countLabel: '×$waterCount',
+          onTap: () => _addRecord(context, RecordType.water, {})),
+        _HabitCard(emoji: '🧘', bgColor: const Color(0xFFE8F8F0), accentColor: const Color(0xFF00B894), label: '正念', countLabel: '×$mindfulnessCount',
+          onTap: () => _addRecord(context, RecordType.mindfulness, {})),
+        _HabitCard(emoji: '🏃', bgColor: const Color(0xFFFFF3E0), accentColor: AppTheme.spontaneousColor, label: '运动', countLabel: '×$exerciseCount',
+          onTap: () => ExerciseDialog.show(context, context.read<DataProvider>().addRecord)),
+        _HabitCard(emoji: '🔴', bgColor: const Color(0xFFFFEBEE), accentColor: AppTheme.heartRed, label: '拒绝挑战', countLabel: '${counts[CourageType.rejection] ?? 0}/100',
+          onTap: () => CourageDialog.show(context, CourageType.rejection, context.read<DataProvider>().addRecord)),
+        _HabitCard(emoji: '🟡', bgColor: const Color(0xFFFFF8E1), accentColor: AppTheme.featherYellow, label: '新事物', countLabel: '${counts[CourageType.newThing] ?? 0}/100',
+          onTap: () => CourageDialog.show(context, CourageType.newThing, context.read<DataProvider>().addRecord)),
+        _HabitCard(emoji: '🟠', bgColor: const Color(0xFFFBE9E7), accentColor: const Color(0xFFFF6B6B), label: '负反馈', countLabel: '${counts[CourageType.negativeFeedback] ?? 0}/100',
+          onTap: () => CourageDialog.show(context, CourageType.negativeFeedback, context.read<DataProvider>().addRecord)),
+        _HabitCard(emoji: '💰', bgColor: const Color(0xFFFFF8E1), accentColor: AppTheme.featherYellow, label: '记账',
+          onTap: () => ExpenseDialog.show(context, context.read<DataProvider>().addRecord)),
+        _HabitCard(emoji: '📝', bgColor: const Color(0xFFEDE7F6), accentColor: const Color(0xFF7C4DFF), label: '即时复盘',
+          onTap: () => ReviewDialog.show(context, context.read<DataProvider>().addRecord)),
       ],
     );
   }
 
-  void _addRecord(
-    BuildContext context,
-    RecordType type,
-    Map<String, dynamic> data,
-  ) {
+  void _addRecord(BuildContext context, RecordType type, Map<String, dynamic> data) {
     context.read<DataProvider>().addRecord(Record(
-          id: DateTime.now().millisecondsSinceEpoch.toString(),
-          timestamp: DateTime.now(),
-          type: type,
-          origin: RecordOrigin.spontaneous,
-          data: data,
-        ));
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      timestamp: DateTime.now(),
+      type: type,
+      origin: RecordOrigin.spontaneous,
+      data: data,
+    ));
   }
 }
 
 class _HabitCard extends StatelessWidget {
-  final IconData icon;
-  final Color iconBgColor;
+  final String emoji;
+  final Color bgColor;
+  final Color accentColor;
   final String label;
   final String? countLabel;
   final VoidCallback onTap;
 
   const _HabitCard({
-    required this.icon,
-    required this.iconBgColor,
+    required this.emoji,
+    required this.bgColor,
+    required this.accentColor,
     required this.label,
     required this.onTap,
     this.countLabel,
@@ -261,50 +195,67 @@ class _HabitCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
-      child: Material(
-        color: AppTheme.cardBackground,
-        borderRadius: BorderRadius.circular(16),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(16),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            child: Row(
-              children: [
-                // Left: colored circle with icon
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: iconBgColor,
-                    shape: BoxShape.circle,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: AppTheme.cardBorder, width: 2),
+          boxShadow: [
+            BoxShadow(
+              color: accentColor.withValues(alpha: 0.08),
+              blurRadius: 0,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(20),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              child: Row(
+                children: [
+                  // Left: emoji on colored circle
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: bgColor,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(child: Text(emoji, style: const TextStyle(fontSize: 22))),
                   ),
-                  child: Icon(icon, color: Colors.white, size: 20),
-                ),
-                const SizedBox(width: 16),
-                // Center: label
-                Expanded(
-                  child: Text(
-                    label,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Text(
+                      label,
+                      style: const TextStyle(
+                        color: AppTheme.textPrimary,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
-                ),
-                // Right: count label
-                if (countLabel != null)
-                  Text(
-                    countLabel!,
-                    style: const TextStyle(
-                      color: AppTheme.emeraldGreen,
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
+                  if (countLabel != null)
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: accentColor.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        countLabel!,
+                        style: TextStyle(
+                          color: accentColor,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
-                  ),
-
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -328,24 +279,19 @@ class _TodoSection extends StatelessWidget {
       children: [
         Row(
           children: [
-            Text(
-              '今日计划',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white70,
-                  ),
-            ),
+            Text('今日计划', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: AppTheme.textSecondary)),
             const Spacer(),
             GestureDetector(
               onTap: () => _showAddTodoDialog(context, isLongTerm: false),
               child: Container(
-                width: 28,
-                height: 28,
+                width: 32,
+                height: 32,
                 decoration: BoxDecoration(
-                  color: AppTheme.emeraldGreen.withValues(alpha: 0.15),
+                  color: AppTheme.emeraldGreen,
                   shape: BoxShape.circle,
+                  boxShadow: [BoxShadow(color: AppTheme.darkGreen, blurRadius: 0, offset: const Offset(0, 3))],
                 ),
-                child: const Icon(Icons.add, color: AppTheme.emeraldGreen, size: 18),
+                child: const Icon(Icons.add, color: Colors.white, size: 20),
               ),
             ),
           ],
@@ -354,10 +300,7 @@ class _TodoSection extends StatelessWidget {
         if (todos.isEmpty)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
-            child: Text(
-              '还没有今日计划，点 + 添加',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white24),
-            ),
+            child: Text('还没有今日计划，点 + 添加', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppTheme.textSecondary)),
           )
         else
           ...todos.map((todo) => _TodoCard(todo: todo)),
@@ -369,89 +312,69 @@ class _TodoSection extends StatelessWidget {
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppTheme.cardBackground,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (_) => _AddTodoSheet(
-        isLongTerm: isLongTerm,
-        onSubmit: (todo) => context.read<DataProvider>().addTodo(todo),
-      ),
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      builder: (_) => _AddTodoSheet(isLongTerm: isLongTerm, onSubmit: (todo) => context.read<DataProvider>().addTodo(todo)),
     );
   }
 }
 
 class _TodoCard extends StatelessWidget {
   final TodoItem todo;
-
   const _TodoCard({required this.todo});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
-      child: Material(
-        color: AppTheme.cardBackground,
-        borderRadius: BorderRadius.circular(16),
-        child: InkWell(
-          onTap: () => context.read<DataProvider>().toggleTodo(todo.id),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
           borderRadius: BorderRadius.circular(16),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            child: Row(
-              children: [
-                // Left: checkbox circle
-                Container(
-                  width: 24,
-                  height: 24,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: todo.isCompleted
-                        ? AppTheme.emeraldGreen
-                        : Colors.transparent,
-                    border: todo.isCompleted
-                        ? null
-                        : Border.all(color: Colors.white38, width: 1.5),
+          border: Border.all(color: todo.isCompleted ? AppTheme.emeraldGreen.withValues(alpha: 0.3) : AppTheme.cardBorder, width: 2),
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () => context.read<DataProvider>().toggleTodo(todo.id),
+            borderRadius: BorderRadius.circular(16),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Row(
+                children: [
+                  Container(
+                    width: 28,
+                    height: 28,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: todo.isCompleted ? AppTheme.emeraldGreen : Colors.transparent,
+                      border: todo.isCompleted ? null : Border.all(color: AppTheme.cardBorder, width: 2.5),
+                    ),
+                    child: todo.isCompleted ? const Icon(Icons.check, color: Colors.white, size: 16) : null,
                   ),
-                  child: todo.isCompleted
-                      ? const Icon(Icons.check, color: Colors.black, size: 14)
-                      : null,
-                ),
-                const SizedBox(width: 12),
-                // Center: title + time
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        todo.title,
-                        style: TextStyle(
-                          color: todo.isCompleted ? Colors.white38 : Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          decoration: todo.isCompleted
-                              ? TextDecoration.lineThrough
-                              : null,
-                          decorationColor: Colors.white38,
-                        ),
-                      ),
-                      if (todo.targetTime != null)
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                         Text(
-                          _fmt(todo.targetTime!),
-                          style: const TextStyle(
-                            color: Colors.white38,
-                            fontSize: 12,
+                          todo.title,
+                          style: TextStyle(
+                            color: todo.isCompleted ? AppTheme.textSecondary : AppTheme.textPrimary,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            decoration: todo.isCompleted ? TextDecoration.lineThrough : null,
+                            decorationColor: AppTheme.textSecondary,
                           ),
                         ),
-                    ],
+                        if (todo.targetTime != null)
+                          Text(_fmt(todo.targetTime!), style: const TextStyle(color: AppTheme.textSecondary, fontSize: 12)),
+                      ],
+                    ),
                   ),
-                ),
-                // Right: category emoji
-                Text(
-                  todo.category.emoji,
-                  style: const TextStyle(fontSize: 16),
-                ),
-              ],
+                  Text(todo.category.emoji, style: const TextStyle(fontSize: 18)),
+                ],
+              ),
             ),
           ),
         ),
@@ -459,15 +382,13 @@ class _TodoCard extends StatelessWidget {
     );
   }
 
-  String _fmt(DateTime t) =>
-      '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}';
+  String _fmt(DateTime t) => '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}';
 }
 
 // ─── Long-term Goals ──────────────────────────────────────────────────────────
 
 class _LongTermSection extends StatefulWidget {
   const _LongTermSection();
-
   @override
   State<_LongTermSection> createState() => _LongTermSectionState();
 }
@@ -485,33 +406,24 @@ class _LongTermSectionState extends State<_LongTermSection> {
       children: [
         Row(
           children: [
-            Text(
-              '长期目标',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white70,
-                  ),
-            ),
+            Text('长期目标', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: AppTheme.textSecondary)),
             const Spacer(),
             GestureDetector(
               onTap: () => _showAddGoalDialog(context),
               child: Container(
-                width: 28,
-                height: 28,
+                width: 32, height: 32,
                 decoration: BoxDecoration(
-                  color: AppTheme.plannedColor.withValues(alpha: 0.15),
+                  color: AppTheme.plannedColor,
                   shape: BoxShape.circle,
+                  boxShadow: [BoxShadow(color: AppTheme.plannedColor.withValues(alpha: 0.4), blurRadius: 0, offset: const Offset(0, 3))],
                 ),
-                child: Icon(Icons.add, color: AppTheme.plannedColor, size: 18),
+                child: const Icon(Icons.add, color: Colors.white, size: 20),
               ),
             ),
             const SizedBox(width: 8),
             GestureDetector(
               onTap: () => setState(() => _expanded = !_expanded),
-              child: Icon(
-                _expanded ? Icons.expand_less : Icons.expand_more,
-                color: Colors.white38,
-              ),
+              child: Icon(_expanded ? Icons.expand_less : Icons.expand_more, color: AppTheme.textSecondary),
             ),
           ],
         ),
@@ -520,10 +432,7 @@ class _LongTermSectionState extends State<_LongTermSection> {
           if (goals.isEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
-              child: Text(
-                '还没有长期目标，点 + 添加',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white24),
-              ),
+              child: Text('还没有长期目标，点 + 添加', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppTheme.textSecondary)),
             )
           else
             ...goals.map((goal) => _LongTermGoalCard(goal: goal)),
@@ -536,84 +445,64 @@ class _LongTermSectionState extends State<_LongTermSection> {
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppTheme.cardBackground,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (_) => _AddTodoSheet(
-        isLongTerm: true,
-        onSubmit: (todo) => context.read<DataProvider>().addTodo(todo),
-      ),
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      builder: (_) => _AddTodoSheet(isLongTerm: true, onSubmit: (todo) => context.read<DataProvider>().addTodo(todo)),
     );
   }
 }
 
 class _LongTermGoalCard extends StatelessWidget {
   final TodoItem goal;
-
   const _LongTermGoalCard({required this.goal});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
-      child: Material(
-        color: AppTheme.cardBackground,
-        borderRadius: BorderRadius.circular(16),
-        child: InkWell(
-          onTap: () => context.read<DataProvider>().toggleTodo(goal.id),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
           borderRadius: BorderRadius.circular(16),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            child: Row(
-              children: [
-                Container(
-                  width: 24,
-                  height: 24,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: goal.isCompleted
-                        ? AppTheme.emeraldGreen
-                        : Colors.transparent,
-                    border: goal.isCompleted
-                        ? null
-                        : Border.all(color: AppTheme.plannedColor, width: 1.5),
+          border: Border.all(color: goal.isCompleted ? AppTheme.emeraldGreen.withValues(alpha: 0.3) : AppTheme.cardBorder, width: 2),
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () => context.read<DataProvider>().toggleTodo(goal.id),
+            borderRadius: BorderRadius.circular(16),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Row(
+                children: [
+                  Container(
+                    width: 28, height: 28,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: goal.isCompleted ? AppTheme.emeraldGreen : Colors.transparent,
+                      border: goal.isCompleted ? null : Border.all(color: AppTheme.plannedColor, width: 2.5),
+                    ),
+                    child: goal.isCompleted ? const Icon(Icons.check, color: Colors.white, size: 16) : null,
                   ),
-                  child: goal.isCompleted
-                      ? const Icon(Icons.check, color: Colors.black, size: 14)
-                      : null,
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        goal.title,
-                        style: TextStyle(
-                          color: goal.isCompleted ? Colors.white38 : Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(goal.title, style: TextStyle(
+                          color: goal.isCompleted ? AppTheme.textSecondary : AppTheme.textPrimary,
+                          fontSize: 15, fontWeight: FontWeight.w600,
                           decoration: goal.isCompleted ? TextDecoration.lineThrough : null,
-                          decorationColor: Colors.white38,
-                        ),
-                      ),
-                      if (goal.streak > 0)
-                        Text(
-                          '连续 ${goal.streak} 天',
-                          style: const TextStyle(
-                            color: AppTheme.emeraldGreen,
-                            fontSize: 12,
-                          ),
-                        ),
-                    ],
+                          decorationColor: AppTheme.textSecondary,
+                        )),
+                        if (goal.streak > 0)
+                          Text('连续 ${goal.streak} 天', style: const TextStyle(color: AppTheme.emeraldGreen, fontSize: 12, fontWeight: FontWeight.bold)),
+                      ],
+                    ),
                   ),
-                ),
-                Text(
-                  goal.category.emoji,
-                  style: const TextStyle(fontSize: 16),
-                ),
-              ],
+                  Text(goal.category.emoji, style: const TextStyle(fontSize: 18)),
+                ],
+              ),
             ),
           ),
         ),
@@ -627,7 +516,6 @@ class _LongTermGoalCard extends StatelessWidget {
 class _AddTodoSheet extends StatefulWidget {
   final bool isLongTerm;
   final void Function(TodoItem) onSubmit;
-
   const _AddTodoSheet({required this.isLongTerm, required this.onSubmit});
 
   @override
@@ -640,88 +528,59 @@ class _AddTodoSheetState extends State<_AddTodoSheet> {
   TimeOfDay? _selectedTime;
 
   @override
-  void dispose() {
-    _titleController.dispose();
-    super.dispose();
-  }
+  void dispose() { _titleController.dispose(); super.dispose(); }
 
   @override
   Widget build(BuildContext context) {
     final bottom = MediaQuery.of(context).viewInsets.bottom;
     return Padding(
-      padding: EdgeInsets.fromLTRB(16, 16, 16, bottom + 16),
+      padding: EdgeInsets.fromLTRB(20, 16, 20, bottom + 16),
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.white24,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            ),
+            Center(child: Container(width: 40, height: 4, decoration: BoxDecoration(color: AppTheme.cardBorder, borderRadius: BorderRadius.circular(2)))),
             const SizedBox(height: 16),
-            Text(
-              widget.isLongTerm ? '添加长期目标' : '添加今日计划',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-            ),
+            Text(widget.isLongTerm ? '添加长期目标' : '添加今日计划',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: AppTheme.textPrimary)),
             const SizedBox(height: 20),
-            // Title input
             TextField(
               controller: _titleController,
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: AppTheme.textPrimary),
               autofocus: true,
               decoration: InputDecoration(
                 hintText: widget.isLongTerm ? '目标名称' : '任务名称',
-                hintStyle: const TextStyle(color: Colors.white38),
+                hintStyle: const TextStyle(color: AppTheme.textSecondary),
                 filled: true,
-                fillColor: const Color(0xFF162030),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide.none,
-                ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                fillColor: AppTheme.background,
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide(color: AppTheme.cardBorder)),
+                enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide(color: AppTheme.cardBorder, width: 2)),
+                focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide(color: AppTheme.emeraldGreen, width: 2)),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               ),
             ),
             const SizedBox(height: 16),
-            // Time picker (only for today's tasks)
             if (!widget.isLongTerm) ...[
               GestureDetector(
                 onTap: () async {
-                  final picked = await showTimePicker(
-                    context: context,
-                    initialTime: TimeOfDay.now(),
-                  );
-                  if (picked != null) {
-                    setState(() => _selectedTime = picked);
-                  }
+                  final picked = await showTimePicker(context: context, initialTime: TimeOfDay.now());
+                  if (picked != null) setState(() => _selectedTime = picked);
                 },
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF162030),
-                    borderRadius: BorderRadius.circular(10),
+                    color: AppTheme.background,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: AppTheme.cardBorder, width: 2),
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.access_time, color: Colors.white38, size: 18),
+                      Icon(Icons.access_time, color: AppTheme.textSecondary, size: 18),
                       const SizedBox(width: 8),
                       Text(
-                        _selectedTime != null
-                            ? _selectedTime!.format(context)
-                            : '目标时间（可选）',
-                        style: TextStyle(
-                          color: _selectedTime != null ? Colors.white : Colors.white38,
-                          fontSize: 14,
-                        ),
+                        _selectedTime != null ? _selectedTime!.format(context) : '目标时间（可选）',
+                        style: TextStyle(color: _selectedTime != null ? AppTheme.textPrimary : AppTheme.textSecondary, fontSize: 14),
                       ),
                     ],
                   ),
@@ -729,8 +588,7 @@ class _AddTodoSheetState extends State<_AddTodoSheet> {
               ),
               const SizedBox(height: 16),
             ],
-            // Category picker
-            Text('分类', style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white70)),
+            Text('分类', style: Theme.of(context).textTheme.labelLarge?.copyWith(color: AppTheme.textSecondary, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,
@@ -740,42 +598,40 @@ class _AddTodoSheetState extends State<_AddTodoSheet> {
                 return GestureDetector(
                   onTap: () => setState(() => _selectedCategory = cat),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                     decoration: BoxDecoration(
-                      color: isSelected
-                          ? AppTheme.emeraldGreen.withValues(alpha: 0.2)
-                          : const Color(0xFF162030),
+                      color: isSelected ? AppTheme.emeraldGreen.withValues(alpha: 0.12) : AppTheme.background,
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: isSelected ? AppTheme.emeraldGreen : Colors.white12,
-                        width: isSelected ? 1.5 : 1,
-                      ),
+                      border: Border.all(color: isSelected ? AppTheme.emeraldGreen : AppTheme.cardBorder, width: 2),
                     ),
                     child: Text(
                       '${cat.emoji} ${cat.label}',
-                      style: TextStyle(
-                        color: isSelected ? AppTheme.emeraldGreen : Colors.white54,
-                        fontSize: 13,
-                      ),
+                      style: TextStyle(color: isSelected ? AppTheme.emeraldGreen : AppTheme.textSecondary, fontSize: 13, fontWeight: isSelected ? FontWeight.bold : FontWeight.normal),
                     ),
                   ),
                 );
               }).toList(),
             ),
             const SizedBox(height: 24),
+            // Duolingo-style chunky button
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.emeraldGreen,
-                  foregroundColor: Colors.black,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [BoxShadow(color: AppTheme.darkGreen, blurRadius: 0, offset: const Offset(0, 4))],
                 ),
-                onPressed: _submit,
-                child: const Text('保存', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.emeraldGreen,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    elevation: 0,
+                  ),
+                  onPressed: _submit,
+                  child: const Text('保存', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                ),
               ),
             ),
           ],
@@ -787,33 +643,15 @@ class _AddTodoSheetState extends State<_AddTodoSheet> {
   void _submit() {
     final title = _titleController.text.trim();
     if (title.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('请填写任务名称')),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('请填写任务名称')));
       return;
     }
-
     DateTime? targetTime;
     if (_selectedTime != null) {
       final now = DateTime.now();
-      targetTime = DateTime(
-        now.year,
-        now.month,
-        now.day,
-        _selectedTime!.hour,
-        _selectedTime!.minute,
-      );
+      targetTime = DateTime(now.year, now.month, now.day, _selectedTime!.hour, _selectedTime!.minute);
     }
-
-    widget.onSubmit(TodoItem(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      title: title,
-      targetTime: targetTime,
-      category: _selectedCategory,
-      createdAt: DateTime.now(),
-      isLongTerm: widget.isLongTerm,
-    ));
-
+    widget.onSubmit(TodoItem(id: DateTime.now().millisecondsSinceEpoch.toString(), title: title, targetTime: targetTime, category: _selectedCategory, createdAt: DateTime.now(), isLongTerm: widget.isLongTerm));
     Navigator.of(context).pop();
   }
 }
@@ -831,22 +669,13 @@ class _Timeline extends StatelessWidget {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 32),
         child: Center(
-          child: Text(
-            '今天还没有记录，开始吧！',
-            style: Theme.of(context)
-                .textTheme
-                .bodySmall
-                ?.copyWith(color: Colors.white24),
-          ),
+          child: Text('今天还没有记录，开始吧！', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppTheme.textSecondary)),
         ),
       );
     }
 
     return Column(
-      children: allRecords
-          .where((r) => r.type != RecordType.todo)
-          .map((r) => _buildTimelineCard(context, r))
-          .toList(),
+      children: allRecords.where((r) => r.type != RecordType.todo).map((r) => _buildTimelineCard(context, r)).toList(),
     );
   }
 
@@ -856,43 +685,27 @@ class _Timeline extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
-      child: Material(
-        color: AppTheme.cardBackground,
-        borderRadius: BorderRadius.circular(16),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppTheme.cardBorder, width: 1.5),
+        ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Row(
             children: [
-              // Left: colored bar
               Container(
-                width: 3,
-                height: 36,
+                width: 4, height: 36,
                 margin: const EdgeInsets.only(right: 12),
-                decoration: BoxDecoration(
-                  color: barColor,
-                  borderRadius: BorderRadius.circular(2),
-                ),
+                decoration: BoxDecoration(color: barColor, borderRadius: BorderRadius.circular(2)),
               ),
-              // Time
               SizedBox(
                 width: 80,
-                child: Text(
-                  _timeLabel(r),
-                  style: const TextStyle(
-                    color: Colors.white38,
-                    fontSize: 12,
-                  ),
-                ),
+                child: Text(_timeLabel(r), style: const TextStyle(color: AppTheme.textSecondary, fontSize: 12)),
               ),
-              // Content
               Expanded(
-                child: Text(
-                  _recordLabel(r),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                  ),
-                ),
+                child: Text(_recordLabel(r), style: const TextStyle(color: AppTheme.textPrimary, fontSize: 14, fontWeight: FontWeight.w500)),
               ),
             ],
           ),
@@ -905,48 +718,40 @@ class _Timeline extends StatelessWidget {
     if (r.type == RecordType.review) {
       final start = r.data['startTime'] as DateTime?;
       final end = r.data['endTime'] as DateTime?;
-      if (start != null && end != null) {
-        return '${_fmt(start)}~${_fmt(end)}';
-      }
+      if (start != null && end != null) return '${_fmt(start)}~${_fmt(end)}';
     }
     return _fmt(r.timestamp);
   }
 
-  String _fmt(DateTime t) =>
-      '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}';
+  String _fmt(DateTime t) => '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}';
 
   String _recordLabel(Record r) {
     switch (r.type) {
-      case RecordType.water:
-        return '喝水';
-      case RecordType.mindfulness:
-        return '正念';
+      case RecordType.water: return '💧 喝水';
+      case RecordType.mindfulness: return '🧘 正念';
       case RecordType.exercise:
         final exerciseType = r.data['exerciseType'] as String?;
         final duration = r.data['duration'] as int?;
-        if (exerciseType != null && duration != null) {
-          return '$exerciseType (${duration}min)';
-        } else if (exerciseType != null) {
-          return exerciseType;
-        }
-        return '运动';
+        if (exerciseType != null && duration != null) return '🏃 $exerciseType (${duration}min)';
+        if (exerciseType != null) return '🏃 $exerciseType';
+        return '🏃 运动';
       case RecordType.courage:
         final ct = r.data['courageType'] as CourageType?;
         final desc = r.data['description'] as String?;
-        if (ct != null && desc != null) return '${ct.label}: $desc';
-        if (ct != null) return ct.label;
+        if (ct != null && desc != null) return '${ct.emoji} ${ct.label}: $desc';
+        if (ct != null) return '${ct.emoji} ${ct.label}';
         return '勇气';
       case RecordType.expense:
         final cat = r.data['expenseCategory'] as ExpenseCategory?;
         final amount = r.data['amount'] as num?;
-        return '${cat?.label ?? '支出'} ¥${amount?.toStringAsFixed(2) ?? ''}';
+        return '💰 ${cat?.label ?? '支出'} ¥${amount?.toStringAsFixed(2) ?? ''}';
       case RecordType.income:
         final cat = r.data['incomeCategory'] as IncomeCategory?;
         final amount = r.data['amount'] as num?;
-        return '${cat?.label ?? '收入'} ¥${amount?.toStringAsFixed(2) ?? ''}';
+        return '💵 ${cat?.label ?? '收入'} ¥${amount?.toStringAsFixed(2) ?? ''}';
       case RecordType.review:
         final what = r.data['what'] as String? ?? '复盘';
-        return what;
+        return '📝 $what';
       case RecordType.todo:
         return r.data['title'] as String? ?? '任务';
     }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:life_tracker/theme/app_theme.dart';
 import 'package:provider/provider.dart';
 
 import '../models/record.dart';
@@ -86,13 +87,13 @@ class _GoalCard extends StatelessWidget {
                       '$recordCount 条记录  ·  ${totalHours.toStringAsFixed(1)} 小时',
                       style: const TextStyle(
                         fontSize: 12,
-                        color: Colors.white54,
+                        color: AppTheme.textSecondary,
                       ),
                     ),
                   ],
                 ),
               ),
-              const Icon(Icons.chevron_right, color: Colors.white38),
+              const Icon(Icons.chevron_right, color: AppTheme.textSecondary),
             ],
           ),
         ),
@@ -146,7 +147,7 @@ class _GoalDetailScreen extends StatelessWidget {
                       style: Theme.of(context)
                           .textTheme
                           .bodyMedium
-                          ?.copyWith(color: Colors.white38),
+                          ?.copyWith(color: AppTheme.textSecondary),
                     ),
                   )
                 : ListView.separated(
@@ -210,7 +211,7 @@ class _RecordItem extends StatelessWidget {
               children: [
                 Text(
                   _fmtDate(record.timestamp),
-                  style: const TextStyle(fontSize: 11, color: Colors.white38),
+                  style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary),
                 ),
                 if (durationStr.isNotEmpty) ...[
                   const SizedBox(width: 8),
@@ -239,7 +240,7 @@ class _RecordItem extends StatelessWidget {
               Text(
                 '💡 $optimization',
                 style:
-                    const TextStyle(fontSize: 11, color: Colors.white38),
+                    const TextStyle(fontSize: 11, color: AppTheme.textSecondary),
               ),
             ],
           ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:life_tracker/theme/app_theme.dart';
 import 'package:flutter/services.dart';
 import 'package:life_tracker/models/record.dart';
 
@@ -57,7 +58,7 @@ class _ExpenseDialogState extends State<ExpenseDialog> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.white24,
+                  color: AppTheme.cardBorder,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),

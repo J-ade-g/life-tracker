@@ -77,7 +77,7 @@ class ExerciseDialog extends StatefulWidget {
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppTheme.cardBackground,
+      backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -114,7 +114,7 @@ class _ExerciseDialogState extends State<ExerciseDialog> {
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppTheme.cardBackground,
+      backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -141,13 +141,13 @@ class _ExerciseDialogState extends State<ExerciseDialog> {
             Center(
               child: Container(
                 width: 40, height: 4,
-                decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(2)),
+                decoration: BoxDecoration(color: AppTheme.cardBorder, borderRadius: BorderRadius.circular(2)),
               ),
             ),
             const SizedBox(height: 16),
             Row(
               children: [
-                Text('运动', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: Colors.white)),
+                Text('运动', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: AppTheme.textPrimary)),
                 const Spacer(),
                 GestureDetector(
                   onTap: _showEditPresets,
@@ -170,7 +170,7 @@ class _ExerciseDialogState extends State<ExerciseDialog> {
               ],
             ),
             const SizedBox(height: 20),
-            Text('快速选择', style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white70)),
+            Text('快速选择', style: Theme.of(context).textTheme.labelLarge?.copyWith(color: AppTheme.textSecondary)),
             const SizedBox(height: 12),
             GridView.count(
               crossAxisCount: 3,
@@ -185,10 +185,10 @@ class _ExerciseDialogState extends State<ExerciseDialog> {
                   onTap: () => setState(() => _typeController.text = preset.name),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: isSelected ? AppTheme.emeraldGreen.withValues(alpha: 0.2) : const Color(0xFF162030),
+                      color: isSelected ? AppTheme.emeraldGreen.withValues(alpha: 0.2) : AppTheme.background,
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
-                        color: isSelected ? AppTheme.emeraldGreen : Colors.white12,
+                        color: isSelected ? AppTheme.emeraldGreen : AppTheme.cardBorder,
                         width: isSelected ? 1.5 : 1,
                       ),
                     ),
@@ -200,7 +200,7 @@ class _ExerciseDialogState extends State<ExerciseDialog> {
                         Text(
                           preset.name,
                           style: TextStyle(
-                            color: isSelected ? AppTheme.emeraldGreen : Colors.white70,
+                            color: isSelected ? AppTheme.emeraldGreen : AppTheme.textSecondary,
                             fontSize: 13,
                             fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                           ),
@@ -214,19 +214,19 @@ class _ExerciseDialogState extends State<ExerciseDialog> {
             const SizedBox(height: 16),
             TextField(
               controller: _typeController,
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: AppTheme.textPrimary),
               onChanged: (_) => setState(() {}),
               decoration: InputDecoration(
                 hintText: '或自定义运动名称',
-                hintStyle: const TextStyle(color: Colors.white38),
+                hintStyle: const TextStyle(color: AppTheme.textSecondary),
                 filled: true,
-                fillColor: const Color(0xFF162030),
+                fillColor: AppTheme.background,
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               ),
             ),
             const SizedBox(height: 20),
-            Text('时长', style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white70)),
+            Text('时长', style: Theme.of(context).textTheme.labelLarge?.copyWith(color: AppTheme.textSecondary)),
             const SizedBox(height: 12),
             Row(
               children: _durations.map((d) {
@@ -238,11 +238,11 @@ class _ExerciseDialogState extends State<ExerciseDialog> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       decoration: BoxDecoration(
-                        color: isSelected ? AppTheme.emeraldGreen.withValues(alpha: 0.2) : const Color(0xFF162030),
+                        color: isSelected ? AppTheme.emeraldGreen.withValues(alpha: 0.2) : AppTheme.background,
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: isSelected ? AppTheme.emeraldGreen : Colors.white12, width: isSelected ? 1.5 : 1),
+                        border: Border.all(color: isSelected ? AppTheme.emeraldGreen : AppTheme.cardBorder, width: isSelected ? 1.5 : 1),
                       ),
-                      child: Text('${d}min', style: TextStyle(color: isSelected ? AppTheme.emeraldGreen : Colors.white54, fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal)),
+                      child: Text('${d}min', style: TextStyle(color: isSelected ? AppTheme.emeraldGreen : AppTheme.textSecondary, fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal)),
                     ),
                   ),
                 );
@@ -253,15 +253,15 @@ class _ExerciseDialogState extends State<ExerciseDialog> {
               controller: _durationController,
               keyboardType: TextInputType.number,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: AppTheme.textPrimary),
               onChanged: (_) => setState(() => _selectedDuration = null),
               decoration: InputDecoration(
                 hintText: '自定义分钟数',
-                hintStyle: const TextStyle(color: Colors.white38),
+                hintStyle: const TextStyle(color: AppTheme.textSecondary),
                 suffixText: 'min',
-                suffixStyle: const TextStyle(color: Colors.white54),
+                suffixStyle: const TextStyle(color: AppTheme.textSecondary),
                 filled: true,
-                fillColor: const Color(0xFF162030),
+                fillColor: AppTheme.background,
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               ),
@@ -272,7 +272,7 @@ class _ExerciseDialogState extends State<ExerciseDialog> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppTheme.emeraldGreen,
-                  foregroundColor: Colors.black,
+                  foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
@@ -357,9 +357,9 @@ class _EditPresetsSheetState extends State<_EditPresetsSheet> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(child: Container(width: 40, height: 4, decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(2)))),
+            Center(child: Container(width: 40, height: 4, decoration: BoxDecoration(color: AppTheme.cardBorder, borderRadius: BorderRadius.circular(2)))),
             const SizedBox(height: 16),
-            Text('编辑运动选项', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: Colors.white)),
+            Text('编辑运动选项', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: AppTheme.textPrimary)),
             const SizedBox(height: 16),
             // Current presets as reorderable chips
             ReorderableListView.builder(
@@ -378,18 +378,18 @@ class _EditPresetsSheetState extends State<_EditPresetsSheet> {
                 return ListTile(
                   key: ValueKey('${p.name}_$i'),
                   leading: Text(p.icon, style: const TextStyle(fontSize: 20)),
-                  title: Text(p.name, style: const TextStyle(color: Colors.white)),
+                  title: Text(p.name, style: const TextStyle(color: AppTheme.textPrimary)),
                   trailing: IconButton(
-                    icon: const Icon(Icons.close, color: Colors.white38, size: 18),
+                    icon: const Icon(Icons.close, color: AppTheme.textSecondary, size: 18),
                     onPressed: () => setState(() => _presets.removeAt(i)),
                   ),
                   tileColor: Colors.transparent,
                 );
               },
             ),
-            const Divider(color: Colors.white12),
+            const Divider(color: AppTheme.cardBorder),
             const SizedBox(height: 8),
-            Text('添加新运动', style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white70)),
+            Text('添加新运动', style: Theme.of(context).textTheme.labelLarge?.copyWith(color: AppTheme.textSecondary)),
             const SizedBox(height: 8),
             Row(
               children: [
@@ -398,13 +398,13 @@ class _EditPresetsSheetState extends State<_EditPresetsSheet> {
                   width: 50,
                   child: TextField(
                     controller: _emojiController,
-                    style: const TextStyle(color: Colors.white, fontSize: 20),
+                    style: const TextStyle(color: AppTheme.textPrimary, fontSize: 20),
                     textAlign: TextAlign.center,
                     decoration: InputDecoration(
                       hintText: '🏃',
                       hintStyle: const TextStyle(fontSize: 20),
                       filled: true,
-                      fillColor: const Color(0xFF162030),
+                      fillColor: AppTheme.background,
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
                       contentPadding: const EdgeInsets.symmetric(vertical: 10),
                     ),
@@ -414,12 +414,12 @@ class _EditPresetsSheetState extends State<_EditPresetsSheet> {
                 Expanded(
                   child: TextField(
                     controller: _nameController,
-                    style: const TextStyle(color: Colors.white),
+                    style: const TextStyle(color: AppTheme.textPrimary),
                     decoration: InputDecoration(
                       hintText: '运动名称',
-                      hintStyle: const TextStyle(color: Colors.white38),
+                      hintStyle: const TextStyle(color: AppTheme.textSecondary),
                       filled: true,
-                      fillColor: const Color(0xFF162030),
+                      fillColor: AppTheme.background,
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     ),
@@ -456,8 +456,8 @@ class _EditPresetsSheetState extends State<_EditPresetsSheet> {
                       setState(() => _presets = ExercisePresetStore.getPresets());
                     },
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.white54,
-                      side: const BorderSide(color: Colors.white24),
+                      foregroundColor: AppTheme.textSecondary,
+                      side: const BorderSide(color: AppTheme.cardBorder),
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     ),
@@ -473,7 +473,7 @@ class _EditPresetsSheetState extends State<_EditPresetsSheet> {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppTheme.emeraldGreen,
-                      foregroundColor: Colors.black,
+                      foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     ),
