@@ -1,6 +1,6 @@
 {
-  "version": "2.2.0",
-  "tag": "v2.2.0",
-  "apk_url": "https://ghp.ci/https://github.com/J-ade-g/life-tracker/releases/download/v2.2.0/app-release.apk",
-  "notes": "多邻国风格UI大改版：明亮背景+卡通风格+3D按钮"
+  "version": "2.3.0",
+  "tag": "v2.3.0",
+  "apk_url": "https://ghp.ci/https://github.com/J-ade-g/life-tracker/releases/download/v2.3.0/app-release.apk",
+  "notes": "弹窗全部亮色统一 + 时间输入改文本框 + 3D按钮"
 }
