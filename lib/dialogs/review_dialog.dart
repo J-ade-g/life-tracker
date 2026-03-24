@@ -3,6 +3,24 @@ import 'package:flutter/services.dart';
 import 'package:life_tracker/theme/app_theme.dart';
 import 'package:life_tracker/models/record.dart';
 
+/// Auto-formats time input: user types "1430" → becomes "14:30"
+class TimeTextInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+    // Strip non-digits
+    final digits = newValue.text.replaceAll(RegExp(r'[^\d]'), '');
+    if (digits.length > 4) return oldValue;
+
+    final buf = StringBuffer();
+    for (int i = 0; i < digits.length; i++) {
+      if (i == 2) buf.write(':');
+      buf.write(digits[i]);
+    }
+    final formatted = buf.toString();
+    return TextEditingValue(text: formatted, selection: TextSelection.collapsed(offset: formatted.length));
+  }
+}
+
 class ReviewDialog extends StatefulWidget {
   final void Function(Record) onSubmit;
 
@@ -120,11 +138,11 @@ class _ReviewDialogState extends State<ReviewDialog> {
               children: [
                 Expanded(child: TextField(controller: _startDateCtrl, style: const TextStyle(color: AppTheme.textPrimary), decoration: _inputDeco('MM-DD'), textAlign: TextAlign.center)),
                 const SizedBox(width: 6),
-                Expanded(child: TextField(controller: _startTimeCtrl, style: const TextStyle(color: AppTheme.textPrimary), decoration: _inputDeco('HH:MM'), textAlign: TextAlign.center)),
+                Expanded(child: TextField(controller: _startTimeCtrl, style: const TextStyle(color: AppTheme.textPrimary), decoration: _inputDeco('HH:MM'), textAlign: TextAlign.center, keyboardType: TextInputType.number, inputFormatters: [TimeTextInputFormatter()])),
                 const Padding(padding: EdgeInsets.symmetric(horizontal: 8), child: Text('~', style: TextStyle(color: AppTheme.textSecondary, fontSize: 16))),
                 Expanded(child: TextField(controller: _endDateCtrl, style: const TextStyle(color: AppTheme.textPrimary), decoration: _inputDeco('MM-DD'), textAlign: TextAlign.center)),
                 const SizedBox(width: 6),
-                Expanded(child: TextField(controller: _endTimeCtrl, style: const TextStyle(color: AppTheme.textPrimary), decoration: _inputDeco('HH:MM'), textAlign: TextAlign.center)),
+                Expanded(child: TextField(controller: _endTimeCtrl, style: const TextStyle(color: AppTheme.textPrimary), decoration: _inputDeco('HH:MM'), textAlign: TextAlign.center, keyboardType: TextInputType.number, inputFormatters: [TimeTextInputFormatter()])),
               ],
             ),
             const SizedBox(height: 20),

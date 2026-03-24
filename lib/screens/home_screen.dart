@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'package:life_tracker/dialogs/courage_dialog.dart';
@@ -567,7 +568,9 @@ class _AddTodoSheetState extends State<_AddTodoSheet> {
               TextField(
                 controller: _timeController,
                 style: const TextStyle(color: AppTheme.textPrimary),
-                decoration: _inputDeco('目标时间（可选，格式 HH:MM）'),
+                keyboardType: TextInputType.number,
+                inputFormatters: [_TimeTextInputFormatter()],
+                decoration: _inputDeco('目标时间（可选，输入数字如1430）'),
               ),
               const SizedBox(height: 16),
             ],
@@ -664,7 +667,7 @@ class _Timeline extends StatelessWidget {
     }
 
     return Column(
-      children: allRecords.where((r) => r.type != RecordType.todo).map((r) => _buildTimelineCard(context, r)).toList(),
+      children: allRecords.map((r) => _buildTimelineCard(context, r)).toList(),
     );
   }
 
@@ -742,7 +745,26 @@ class _Timeline extends StatelessWidget {
         final what = r.data['what'] as String? ?? '复盘';
         return '📝 $what';
       case RecordType.todo:
-        return r.data['title'] as String? ?? '任务';
+        final title = r.data['title'] as String? ?? '任务';
+        final completed = r.data['completed'] as bool? ?? false;
+        return completed ? '✅ $title' : '📋 $title';
     }
+  }
+}
+
+// ─── Time Input Formatter ─────────────────────────────────────────────────────
+
+class _TimeTextInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+    final digits = newValue.text.replaceAll(RegExp(r'[^\d]'), '');
+    if (digits.length > 4) return oldValue;
+    final buf = StringBuffer();
+    for (int i = 0; i < digits.length; i++) {
+      if (i == 2) buf.write(':');
+      buf.write(digits[i]);
+    }
+    final formatted = buf.toString();
+    return TextEditingValue(text: formatted, selection: TextSelection.collapsed(offset: formatted.length));
   }
 }

@@ -1,6 +1,6 @@
 {
-  "version": "2.4.2",
-  "tag": "v2.4.2",
-  "apk_url": "https://github.com/J-ade-g/life-tracker/releases/download/v2.4.2/app-release.apk",
-  "notes": "修复自动更新安装失败问题（鸿蒙兼容）"
+  "version": "2.5.0",
+  "tag": "v2.5.0",
+  "apk_url": "https://github.com/J-ade-g/life-tracker/releases/download/v2.5.0/app-release.apk",
+  "notes": "P1修复：时间输入自动格式化 + 今日计划显示在时间流 + todo图标区分"
 }
