@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:life_tracker/theme/app_theme.dart';
 import 'package:flutter/services.dart';
 import 'package:life_tracker/models/record.dart';
+import 'package:life_tracker/providers/data_provider.dart';
+import 'package:provider/provider.dart';
 
 class ExpenseDialog extends StatefulWidget {
   final void Function(Record) onSubmit;
@@ -27,6 +29,8 @@ class _ExpenseDialogState extends State<ExpenseDialog> {
   final _noteController = TextEditingController();
   ExpenseCategory? _selectedExpenseCategory;
   IncomeCategory? _selectedIncomeCategory;
+  String? _selectedCustomExpense; // "emoji|label"
+  String? _selectedCustomIncome;
 
   @override
   void dispose() { _amountController.dispose(); _noteController.dispose(); super.dispose(); }
@@ -117,9 +121,17 @@ class _ExpenseDialogState extends State<ExpenseDialog> {
             Text('分类 *', style: TextStyle(color: AppTheme.textPrimary, fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
             if (_isExpense)
-              Wrap(spacing: 8, runSpacing: 8, children: ExpenseCategory.values.map((cat) => _chip('${cat.emoji} ${cat.label}', _selectedExpenseCategory == cat, () => setState(() => _selectedExpenseCategory = cat))).toList())
+              Wrap(spacing: 8, runSpacing: 8, children: [
+                ...ExpenseCategory.values.map((cat) => _chip('${cat.emoji} ${cat.label}', _selectedExpenseCategory == cat && _selectedCustomExpense == null, () => setState(() { _selectedExpenseCategory = cat; _selectedCustomExpense = null; }))),
+                ...context.watch<DataProvider>().customExpenseCategories.map((c) => _chip('${c.emoji} ${c.label}', _selectedCustomExpense == '${c.emoji}|${c.label}', () => setState(() { _selectedCustomExpense = '${c.emoji}|${c.label}'; _selectedExpenseCategory = null; }))),
+                _addCategoryChip(() => _showAddCategoryDialog(isExpense: true)),
+              ])
             else
-              Wrap(spacing: 8, runSpacing: 8, children: IncomeCategory.values.map((cat) => _chip('${cat.emoji} ${cat.label}', _selectedIncomeCategory == cat, () => setState(() => _selectedIncomeCategory = cat))).toList()),
+              Wrap(spacing: 8, runSpacing: 8, children: [
+                ...IncomeCategory.values.map((cat) => _chip('${cat.emoji} ${cat.label}', _selectedIncomeCategory == cat && _selectedCustomIncome == null, () => setState(() { _selectedIncomeCategory = cat; _selectedCustomIncome = null; }))),
+                ...context.watch<DataProvider>().customIncomeCategories.map((c) => _chip('${c.emoji} ${c.label}', _selectedCustomIncome == '${c.emoji}|${c.label}', () => setState(() { _selectedCustomIncome = '${c.emoji}|${c.label}'; _selectedIncomeCategory = null; }))),
+                _addCategoryChip(() => _showAddCategoryDialog(isExpense: false)),
+              ]),
             const SizedBox(height: 20),
 
             Text('备注（可选）', style: TextStyle(color: AppTheme.textPrimary, fontWeight: FontWeight.w600)),
@@ -144,31 +156,90 @@ class _ExpenseDialogState extends State<ExpenseDialog> {
     );
   }
 
+  Widget _addCategoryChip(VoidCallback onTap) => GestureDetector(
+    onTap: onTap,
+    child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      decoration: BoxDecoration(
+        color: AppTheme.background,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppTheme.cardBorder, width: 2, style: BorderStyle.solid),
+      ),
+      child: const Text('+ 添加', style: TextStyle(color: AppTheme.textSecondary, fontSize: 13)),
+    ),
+  );
+
+  void _showAddCategoryDialog({required bool isExpense}) {
+    final labelCtrl = TextEditingController();
+    final emojiCtrl = TextEditingController(text: '📌');
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(isExpense ? '添加支出分类' : '添加收入分类'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(controller: emojiCtrl, decoration: const InputDecoration(labelText: 'Emoji（一个）'), textAlign: TextAlign.center),
+            const SizedBox(height: 8),
+            TextField(controller: labelCtrl, decoration: const InputDecoration(labelText: '分类名称'), autofocus: true),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('取消')),
+          FilledButton(
+            onPressed: () {
+              final label = labelCtrl.text.trim();
+              final emoji = emojiCtrl.text.trim();
+              if (label.isEmpty) return;
+              final dp = context.read<DataProvider>();
+              if (isExpense) {
+                dp.addCustomExpenseCategory(emoji.isEmpty ? '📌' : emoji, label);
+              } else {
+                dp.addCustomIncomeCategory(emoji.isEmpty ? '📌' : emoji, label);
+              }
+              Navigator.pop(ctx);
+            },
+            child: const Text('添加'),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _submit() {
     final amount = double.tryParse(_amountController.text.trim());
     if (amount == null || amount <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('请输入有效金额')));
       return;
     }
-    if (_isExpense && _selectedExpenseCategory == null) {
+    if (_isExpense && _selectedExpenseCategory == null && _selectedCustomExpense == null) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('请选择支出分类')));
       return;
     }
-    if (!_isExpense && _selectedIncomeCategory == null) {
+    if (!_isExpense && _selectedIncomeCategory == null && _selectedCustomIncome == null) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('请选择收入分类')));
       return;
+    }
+    final data = <String, dynamic>{'amount': amount, 'note': _noteController.text.trim()};
+    if (_isExpense) {
+      if (_selectedExpenseCategory != null) {
+        data['expenseCategory'] = _selectedExpenseCategory;
+      } else if (_selectedCustomExpense != null) {
+        data['customCategory'] = _selectedCustomExpense;
+      }
+    } else {
+      if (_selectedIncomeCategory != null) {
+        data['incomeCategory'] = _selectedIncomeCategory;
+      } else if (_selectedCustomIncome != null) {
+        data['customCategory'] = _selectedCustomIncome;
+      }
     }
     widget.onSubmit(Record(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       timestamp: DateTime.now(),
       type: _isExpense ? RecordType.expense : RecordType.income,
       origin: RecordOrigin.spontaneous,
-      data: {
-        'amount': amount,
-        if (_isExpense) 'expenseCategory': _selectedExpenseCategory,
-        if (!_isExpense) 'incomeCategory': _selectedIncomeCategory,
-        'note': _noteController.text.trim(),
-      },
+      data: data,
     ));
     Navigator.of(context).pop();
   }

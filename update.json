@@ -1,6 +1,6 @@
 {
-  "version": "2.5.0",
-  "tag": "v2.5.0",
-  "apk_url": "https://github.com/J-ade-g/life-tracker/releases/download/v2.5.0/app-release.apk",
-  "notes": "P1修复：时间输入自动格式化 + 今日计划显示在时间流 + todo图标区分"
+  "version": "2.6.0",
+  "tag": "v2.6.0",
+  "apk_url": "https://github.com/J-ade-g/life-tracker/releases/download/v2.6.0/app-release.apk",
+  "notes": "P2修复：记账分类可自定义添加 + 目标详情可点击展开"
 }

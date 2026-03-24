@@ -11,6 +11,8 @@ class DataProvider extends ChangeNotifier {
   static const _todosBoxName = 'todos';
   static const _budgetKey = '__budget__';
   static const _presetsKey = '__exercise_presets__';
+  static const _customExpenseCatsKey = '__custom_expense_cats__';
+  static const _customIncomeCatsKey = '__custom_income_cats__';
 
   Box<String>? _box;
   Box<String>? _todosBox;
@@ -21,6 +23,25 @@ class DataProvider extends ChangeNotifier {
   static const _defaultPresets = ['跑步', '散步', '瑜伽', '俯卧撑', '深蹲', '拉伸', '游泳', '骑车', '跳绳'];
   List<String> _exercisePresets = List.of(_defaultPresets);
 
+  // Custom expense/income categories: stored as "emoji|label"
+  List<({String emoji, String label})> _customExpenseCats = [];
+  List<({String emoji, String label})> _customIncomeCats = [];
+
+  List<({String emoji, String label})> get customExpenseCategories => List.unmodifiable(_customExpenseCats);
+  List<({String emoji, String label})> get customIncomeCategories => List.unmodifiable(_customIncomeCats);
+
+  Future<void> addCustomExpenseCategory(String emoji, String label) async {
+    _customExpenseCats.add((emoji: emoji, label: label));
+    await _box?.put(_customExpenseCatsKey, jsonEncode(_customExpenseCats.map((c) => '${c.emoji}|${c.label}').toList()));
+    notifyListeners();
+  }
+
+  Future<void> addCustomIncomeCategory(String emoji, String label) async {
+    _customIncomeCats.add((emoji: emoji, label: label));
+    await _box?.put(_customIncomeCatsKey, jsonEncode(_customIncomeCats.map((c) => '${c.emoji}|${c.label}').toList()));
+    notifyListeners();
+  }
+
   Future<void> init() async {
     _box = await Hive.openBox<String>(_boxName);
     _todosBox = await Hive.openBox<String>(_todosBoxName);
@@ -28,6 +49,21 @@ class DataProvider extends ChangeNotifier {
     final budgetStr = _box?.get(_budgetKey);
     if (budgetStr != null) {
       _monthlyBudget = double.tryParse(budgetStr) ?? 3000;
+    }
+    // Load custom categories
+    final expCatsStr = _box?.get(_customExpenseCatsKey);
+    if (expCatsStr != null) {
+      _customExpenseCats = (jsonDecode(expCatsStr) as List).map((s) {
+        final parts = (s as String).split('|');
+        return (emoji: parts[0], label: parts.length > 1 ? parts[1] : parts[0]);
+      }).toList();
+    }
+    final incCatsStr = _box?.get(_customIncomeCatsKey);
+    if (incCatsStr != null) {
+      _customIncomeCats = (jsonDecode(incCatsStr) as List).map((s) {
+        final parts = (s as String).split('|');
+        return (emoji: parts[0], label: parts.length > 1 ? parts[1] : parts[0]);
+      }).toList();
     }
     // Load all records
     for (final entry in _box!.toMap().entries) {

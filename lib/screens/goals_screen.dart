@@ -181,9 +181,18 @@ class _GoalDetailScreen extends StatelessWidget {
 
 // ── Record list item ───────────────────────────────────────────────────────────
 
-class _RecordItem extends StatelessWidget {
+class _RecordItem extends StatefulWidget {
   final Record record;
   const _RecordItem({required this.record});
+
+  @override
+  State<_RecordItem> createState() => _RecordItemState();
+}
+
+class _RecordItemState extends State<_RecordItem> {
+  bool _expanded = false;
+
+  Record get record => widget.record;
 
   @override
   Widget build(BuildContext context) {
@@ -200,45 +209,60 @@ class _RecordItem extends StatelessWidget {
           : '${mins}min';
     }
 
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppTheme.cardBorder, width: 1.5),
-      ),
-      padding: const EdgeInsets.all(14),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Text(
-                _fmtDate(record.timestamp),
-                style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
-              ),
-              if (durationStr.isNotEmpty) ...[
-                const SizedBox(width: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                  decoration: BoxDecoration(
-                    color: AppTheme.emeraldGreen.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Text(
-                    durationStr,
-                    style: const TextStyle(fontSize: 11, color: AppTheme.emeraldGreen, fontWeight: FontWeight.bold),
-                  ),
+    return GestureDetector(
+      onTap: () => setState(() => _expanded = !_expanded),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: _expanded ? AppTheme.emeraldGreen.withValues(alpha: 0.5) : AppTheme.cardBorder, width: 1.5),
+        ),
+        padding: const EdgeInsets.all(14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text(
+                  _fmtDate(record.timestamp),
+                  style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
                 ),
+                if (durationStr.isNotEmpty) ...[
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: AppTheme.emeraldGreen.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      durationStr,
+                      style: const TextStyle(fontSize: 11, color: AppTheme.emeraldGreen, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+                const Spacer(),
+                Icon(_expanded ? Icons.expand_less : Icons.expand_more, size: 18, color: AppTheme.textSecondary),
               ],
+            ),
+            const SizedBox(height: 6),
+            Text(what, style: const TextStyle(color: AppTheme.textPrimary, fontSize: 14, fontWeight: FontWeight.w500)),
+            if (optimization != null && optimization.isNotEmpty) ...[
+              const SizedBox(height: 4),
+              Text('💡 $optimization', style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
             ],
-          ),
-          const SizedBox(height: 6),
-          Text(what, style: const TextStyle(color: AppTheme.textPrimary, fontSize: 14, fontWeight: FontWeight.w500)),
-          if (optimization != null && optimization.isNotEmpty) ...[
-            const SizedBox(height: 4),
-            Text('💡 $optimization', style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
+            if (_expanded) ...[
+              const Divider(height: 16),
+              if (record.data['principles'] != null && (record.data['principles'] as List).isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 4),
+                  child: Text('原则：${(record.data['principles'] as List).map((p) => p is Principle ? p.label : p.toString()).join('、')}', style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
+                ),
+              if (record.data['categories'] != null)
+                Text('分类：${(record.data['categories'] as List).map((c) => c is GoalCategory ? '${c.emoji} ${c.label}' : c.toString()).join('、')}', style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary)),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

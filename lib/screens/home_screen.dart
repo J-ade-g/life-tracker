@@ -735,12 +735,16 @@ class _Timeline extends StatelessWidget {
         return '勇气';
       case RecordType.expense:
         final cat = r.data['expenseCategory'] as ExpenseCategory?;
+        final custom = r.data['customCategory'] as String?;
         final amount = r.data['amount'] as num?;
-        return '💰 ${cat?.label ?? '支出'} ¥${amount?.toStringAsFixed(2) ?? ''}';
+        final catLabel = cat?.label ?? (custom != null ? custom.split('|').last : '支出');
+        return '💰 $catLabel ¥${amount?.toStringAsFixed(2) ?? ''}';
       case RecordType.income:
         final cat = r.data['incomeCategory'] as IncomeCategory?;
+        final custom = r.data['customCategory'] as String?;
         final amount = r.data['amount'] as num?;
-        return '💵 ${cat?.label ?? '收入'} ¥${amount?.toStringAsFixed(2) ?? ''}';
+        final catLabel = cat?.label ?? (custom != null ? custom.split('|').last : '收入');
+        return '💵 $catLabel ¥${amount?.toStringAsFixed(2) ?? ''}';
       case RecordType.review:
         final what = r.data['what'] as String? ?? '复盘';
         return '📝 $what';
