@@ -1,6 +1,6 @@
 {
-  "version": "2.4.1",
-  "tag": "v2.4.1",
-  "apk_url": "https://github.com/J-ade-g/life-tracker/releases/download/v2.4.1/app-release.apk",
-  "notes": "弹窗全部亮色统一 + 时间输入改文本框 + 3D按钮"
+  "version": "2.4.2",
+  "tag": "v2.4.2",
+  "apk_url": "https://github.com/J-ade-g/life-tracker/releases/download/v2.4.2/app-release.apk",
+  "notes": "修复自动更新安装失败问题（鸿蒙兼容）"
 }

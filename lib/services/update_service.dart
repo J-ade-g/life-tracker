@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:open_file/open_file.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -160,7 +160,7 @@ class UpdateService {
             throw Exception('Downloaded file too small: ${await file.length()} bytes');
           }
 
-          await OpenFile.open(file.path);
+          await OpenFilex.open(file.path, type: 'application/vnd.android.package-archive');
           return; // Success!
         } finally {
           client.close();
